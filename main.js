@@ -1,4 +1,4 @@
-var margin = {top: 70, right: 20, bottom: 30, left: 50},
+var margin = {top: 100, right: 20, bottom: 30, left: 50},
     width = 1000 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
@@ -14,21 +14,31 @@ d3.json("./data.json", d3.autoType).then(raw_data => {
   console.log("raw_data", raw_data);
 
   var x = d3.scaleLinear()
-    .domain([0, 50])
+    .domain([0, 24])
     .range([ 0, width ]);
    svg.append("g")
     .attr("class", "myXaxis")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
-    .attr("opacity", "0");
+    .append("text")
+    .attr("class", "axis-label")
+    .attr("x", "30%")
+    .attr("dy", "3em")
+    .text("Months (Grouped by seasons in Van Gogh Pallette / Color)");
 
   var y = d3.scaleLinear()
-    .domain([0,50])
+    .domain([0,10])
     .range([height, 10]);
+    
    svg.append("g")
    .attr("class", "myYaxis")
     .call(d3.axisLeft(y))
-    .attr("opacity", "0");
+    .append("text")
+    .attr("class", "axis-label")
+    .attr("y", "38%")
+    .attr("dx", "-3em")
+    .attr("writing-mode", "vertical-rl")
+    .text("Place");
 
   var z = d3.scaleLinear()
     .domain([0, 70])
@@ -63,7 +73,6 @@ d3.json("./data.json", d3.autoType).then(raw_data => {
       .style("opacity", 0)
   }
 
-  // Add dots
   svg.append('g')
     .selectAll("dot")
     .data(raw_data)
@@ -72,32 +81,30 @@ d3.json("./data.json", d3.autoType).then(raw_data => {
       .attr("cx", function (d) { return x(d.Month); } )
       .attr("cy", function (d) { return y(d.Place); } )
       .attr("r", function (d) { return z(d.Genre_Count); } )
-//      .style("fill", "#69b3a2")
-      .style("opacity", "0.7")
-      .attr("stroke", "black")
+      .style("opacity", "0.3")
+      .attr("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave)
       .attr("fill", d => {
-        if (d.Genre_Count > 8) return "#4B584F";
-       else if (d.Genre_Count <= 4) return "#FBE7DE";
-        else return "#DCD19C";
+        if (d.Month == 9 || d.Month == 10 || d.Month == 11) return "#523C29"; //fall
+        else if (d.Month == 6 || d.Month == 7 || d.Month == 8) return "#542815";
+        else if (d.Month == 3 || d.Month == 4 || d.Month == 5) return "#202014";
+        else return "#AD8363"; // winter
       })
 
-    // new X axis
     x.domain([0, 12])
     svg.select(".myXaxis")
       .transition()
       .duration(1000)
-      .attr("opacity", "1")
+      .attr("opacity", ".5")
       .call(d3.axisBottom(x));
 
-        // new Y axis
-    y.domain([0, 5])
+    y.domain([0, 6])
     svg.select(".myYaxis")
       .transition()
       .duration(1000)
-      .attr("opacity", "1")
+      .attr("opacity", ".5")
       .call(d3.axisLeft(y));
 
     svg.selectAll("circle")
@@ -106,6 +113,5 @@ d3.json("./data.json", d3.autoType).then(raw_data => {
         .duration(2000)
         .attr("cx", function (d) { return x(d.Month); } )
         .attr("cy", function (d) { return y(d.Place); } )
-//        .attr("r", function (d) { return z(d.Genre_Count); } )
 
   })
