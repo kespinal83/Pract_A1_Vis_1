@@ -81,7 +81,7 @@ d3.json("./data.json", d3.autoType).then(raw_data => {
       .attr("cx", function (d) { return x(d.Month); } )
       .attr("cy", function (d) { return y(d.Place); } )
       .attr("r", function (d) { return z(d.Genre_Count); } )
-      .style("opacity", "0.3")
+      .style("opacity", "0.9")
       .attr("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
